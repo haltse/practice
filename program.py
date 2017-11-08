@@ -1,4 +1,6 @@
+import csv
 import os
+from data_types import Purchase
 
 
 def main():
@@ -21,19 +23,28 @@ def get_data_file():
 
 def load_file(filename):
     with open(filename, 'r', encoding='utf-8') as fin:
-        header = fin.readline().strip()
-        print('found header:'  + header)
+        purchases = []
+        reader = csv.DictReader(fin)
 
-        lines = []
-        for line in fin:
-            line_data = line.strip().split(',')
-            lines.append(line_data)
-        print(lines[:5])
-    return []
+        for row in reader:
+            # print("Bed Count: {}".format(row['beds']),type(row['beds']))
+            p = Purchase.create_from_dict(row)
+            purchases.append(p)
+        # print(purchases[0].__dict__)
+        return purchases
+
+#def get_price(p):
+#    return p.price
 
 
 def query_data(data):
-    pass
+    #data.sort(key=get_price);
+    data.sort(key= lambda p: p.price)
+    high_purchase = data[-1]
+    low_purchase = data[0]
+
+    print(high_purchase.price)
+    print(low_purchase.price)
 
 
 if __name__ == '__main__':
